@@ -1,5 +1,6 @@
 import 'package:ai_tour_guide/utils/app_route.dart';
 import 'package:ai_tour_guide/view/login_screen.dart';
+import 'package:ai_tour_guide/view/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'l10n/app_localizations.dart';
@@ -14,12 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       locale: Locale("en"),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      initialRoute: AppRoute.loginScreen,
+      initialRoute: AppRoute.welcomeScreen,
       routes: {
         AppRoute.loginScreen : (context) => LoginScreen(),
+        AppRoute.welcomeScreen : (context) => WelcomeScreen(),
+
       },
     );
   }
