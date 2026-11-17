@@ -24,6 +24,12 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Use the camera to scan museum artifacts.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Audio is not recorded while scanning artifact photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a photo of a museum artifact to scan.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
