@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get welcomeBack => 'Welcome Back ';
+  String get welcomeBack => 'مرحبًا بعودتك';
 
   @override
   String get login => 'تسجيل الدخول ';
