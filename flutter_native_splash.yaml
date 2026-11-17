@@ -11,13 +11,13 @@ flutter_native_splash:
   # remain optional. NOTE that if you specify the [required] color, then you cant
   # use the [required] background_image in the next section. the reverse is true.
   # select one, they cant work together.
-  color: "#F5E5C7"  ##====================================[REQUIRED]==========
-  color_dark: "#392852"
+  color: "#E9DECC"  ##====================================[REQUIRED]==========
+  color_dark: "#1F1D18"
   # platform-specific color. will override general color if active:
-  color_android: "#F5E5C7"
-  color_dark_android: "#392852"
-  color_ios: "#F5E5C7"
-  color_dark_ios: "#392852"
+  color_android: "#E9DECC"
+  color_dark_android: "#1F1D18"
+  color_ios: "#E9DECC"
+  color_dark_ios: "#1F1D18"
 
 
   # general background_image for all platform (except android 12+)
@@ -36,22 +36,21 @@ flutter_native_splash:
   # general image for all platform (except android 12+):
   # allows you to specify an image used in the splash screen. It must be a
   # png file and should be sized for 4x pixel density.
-  image:                assets/images/HeritageLens_Eye_of_Horus_Logo-removebg-preview.png
-  #image_dark:          assets/splash-invert.png
-  # platform-specific image. will override general image if active:
-  #image_android:       assets/splash-android.png
-  #image_dark_android:  assets/splash-invert-android.png
-  #image_ios:           assets/splash-ios.png
-  #image_dark_ios:      assets/splash-invert-ios.png
-  #image_web:           assets/splash-web.gif
-  #image_dark_web:      assets/splash-invert-web.gif
+  image:              assets/images/splash_logo.png
+  image_dark:  assets/images/splash_logo_dark.png
+ # platform-specific image. will override general image if active:
+  image_android:      assets/images/splash_logo.png
+  image_dark_android:  assets/images/splash_logo_dark.png
+  image_ios:          assets/images/splash_logo.png
+  image_dark_ios:    assets/images/splash_logo_dark.png
+
 
   # image alignment (default center if not specified, or speccified something else):
   android_gravity: center       # bottom, center, center_horizontal, center_vertical,
   # clip_horizontal, clip_vertical, end, fill, fill_horizontal, fill_vertical, left, right, start, top. could also be a combination like `android_gravity: fill|clip_vertical`
   # This will fill the width while maintaining the image's vertical aspect ratio.
   # visit https://developer.android.com/reference/android/view/Gravity
-  ios_content_mode: center      # scaleToFill, scaleAspectFit, scaleAspectFill,
+  ios_content_mode: scaleAspectFit      # scaleToFill, scaleAspectFit, scaleAspectFill,
   # center, top, bottom, left, right, topLeft, topRight, bottomLeft, or bottomRight.
   # visit https://developer.apple.com/documentation/uikit/uiview/contentmode
   #web_image_mode: center        # center, contain, stretch, cover
@@ -110,8 +109,8 @@ flutter_native_splash:
   #! ANDROID 12+ configuration:
   android_12:
     # background color
-    color: "#F5E5C7"
-    color_dark: "#392852"
+    color: "#E9DECC"
+    color_dark: "#1F1D18"
 
     # center-logo
     # If this parameter is not specified, the app's launcher icon will be used instead.
@@ -119,12 +118,12 @@ flutter_native_splash:
     # with background: 960×960 px (fit within circle 640px in diameter)
     # without background: 1152×1152 px (fit within circle 768px in diameter)
     # ensure that the most important design elements of your image are placed within a circular area
-    image: assets/images/logo/blank.png
-    # image_dark: assets/images/logo/logo-splash2.png
+    image: assets/images/splash_logo.png
+    image_dark: assets/images/splash_logo_dark.png
 
     # center-logo background color
-    icon_background_color: "#111111"
-    # icon_background_color_dark: "#eeeeee"
+    icon_background_color: "#E9DECC"
+    icon_background_color_dark: "#1F1D18"
 
     # branding:
     # The branding image dimensions must be 800x320 px.

@@ -14,8 +14,8 @@ class WelcomeScreen extends StatelessWidget {
       body:Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(AppImages.splashScreen,fit: BoxFit.cover,),
-          Container(color: Colors.black.withValues(alpha: 0.2)),
+          Image.asset(AppImages.welcomeScreen,fit: BoxFit.cover,),
+          Container(color: Colors.black.withValues(alpha: 0.25)),
           SafeArea(child: Stack(
             children: [
               Positioned(
@@ -24,17 +24,17 @@ class WelcomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("WELCOME",style:TextStyle(
-                        color: Color(0xFFBA8E63),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                      ),),
-                      SizedBox(height: height*0.01,),
+                      // Text("WELCOME",style:TextStyle(
+                      //   color: Color(0xFFBA8E63),
+                      //   fontSize: 20,
+                      //   fontWeight: FontWeight.bold,
+                      //   letterSpacing: 1.2,
+                      // ),),
+                      // SizedBox(height: height*0.01,),
                       Text(
                         'Ancient\nEgypt,\nAlive Again',
                         style: TextStyle(
-                          color: Color(0xFFD6D0E2),
+                          color: Color(0xFFE3D4B9),
                           fontSize: 55,
                           height: height*0.0015,
                           fontFamily: 'serif',
@@ -45,7 +45,7 @@ class WelcomeScreen extends StatelessWidget {
                       SizedBox(height: height*0.01,),
                       Text("point your camera at any artifact\nand hear its story",
                       style: TextStyle(fontSize: 16,height: height*0.0015,
-                          color: Color(0xFFD6D0E2)),)
+                          color: Color(0xFFA09581)),)
                     ],
                   )
               ),
@@ -60,10 +60,11 @@ class WelcomeScreen extends StatelessWidget {
                     height: height*0.06,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigate to the next screen
+                        //todo: Navigate to the next screen
+                        Navigator.pushReplacementNamed(context, AppRoute.homeScreen);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: Color(0xFFA09581),
                         foregroundColor: Colors.black,
                         shape: StadiumBorder(),
                         elevation: 0,
