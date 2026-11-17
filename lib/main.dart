@@ -1,4 +1,6 @@
 import 'package:ai_tour_guide/utils/app_route.dart';
+import 'package:ai_tour_guide/view/create_account.dart';
+import 'package:ai_tour_guide/view/home_screen.dart';
 import 'package:ai_tour_guide/utils/app_language.dart';
 import 'package:ai_tour_guide/view/artifact_details_screen.dart';
 import 'package:ai_tour_guide/view/artifact_data.dart';
@@ -20,28 +22,50 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Locale>(
-      valueListenable: appLocale,
-      builder: (context, locale, _) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        initialRoute: AppRoute.welcomeScreen,
-        routes: {
-          AppRoute.loginScreen: (context) => LoginScreen(),
-          AppRoute.welcomeScreen: (context) => WelcomeScreen(),
-          AppRoute.artifactsScreen: (context) =>
-              ArtifactListScreen(museumId: _routeId(context) ?? mockMuseumId),
-          AppRoute.scanScreen: (context) =>
-              ScanScreen(museumId: _routeId(context) ?? mockMuseumId),
-          AppRoute.scanErrorScreen: (context) =>
-              ScanErrorScreen(museumId: _routeId(context) ?? mockMuseumId),
-          AppRoute.artifactDetailsScreen: (context) => ArtifactDetailsScreen(
-            artifact: artifactForId(ModalRoute.of(context)?.settings.arguments),
+
+return ValueListenableBuilder<Locale>(
+  valueListenable: appLocale,
+  builder: (context, locale, _) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    locale: locale,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    initialRoute: AppRoute.welcomeScreen,
+    routes: {
+      // Login & Authentication
+      AppRoute.loginScreen: (context) => LoginScreen(),
+      AppRoute.welcomeScreen: (context) => WelcomeScreen(),
+      AppRoute.createAccount: (context) => CreateAccount(),
+
+      // Home
+      AppRoute.homeScreen: (context) => HomeScreen(),
+
+      // Artifacts
+      AppRoute.artifactsScreen: (context) =>
+          ArtifactListScreen(
+            museumId: _routeId(context) ?? mockMuseumId,
           ),
-        },
-      ),
+
+      AppRoute.scanScreen: (context) =>
+          ScanScreen(
+            museumId: _routeId(context) ?? mockMuseumId,
+          ),
+
+      AppRoute.scanErrorScreen: (context) =>
+          ScanErrorScreen(
+            museumId: _routeId(context) ?? mockMuseumId,
+          ),
+
+      AppRoute.artifactDetailsScreen: (context) =>
+          ArtifactDetailsScreen(
+            artifact: artifactForId(
+              ModalRoute.of(context)?.settings.arguments,
+            ),
+          ),
+    },
+  ),
+);
+
     );
   }
 }
