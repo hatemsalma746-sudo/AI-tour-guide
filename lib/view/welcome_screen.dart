@@ -14,7 +14,7 @@ class WelcomeScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(AppImages.splashScreen, fit: BoxFit.cover),
+          Image.asset(AppImages.welcomeScreen, fit: BoxFit.cover),
           Container(color: Colors.black.withValues(alpha: 0.2)),
           SafeArea(
             child: Stack(
