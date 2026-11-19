@@ -20,6 +20,8 @@ class TourPageShell extends StatelessWidget {
     this.centerTitle = false,
     this.showAppBar = true,
     this.fullWidth = false,
+    this.resizeToAvoidBottomInset = true,
+    this.maintainBottomViewPadding = false,
   });
   final String title;
   final Widget child;
@@ -27,17 +29,26 @@ class TourPageShell extends StatelessWidget {
   final bool centerTitle;
   final bool showAppBar;
   final bool fullWidth;
+  final bool resizeToAvoidBottomInset;
+  final bool maintainBottomViewPadding;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: tourInk,
+    resizeToAvoidBottomInset: resizeToAvoidBottomInset,
     appBar: showAppBar
         ? AppBar(
             backgroundColor: tourInk,
             foregroundColor: tourCream,
             elevation: 0,
             leading: IconButton(
-              onPressed: () => Navigator.maybePop(context),
+              onPressed: () {
+                if (MediaQuery.viewInsetsOf(context).bottom > 0) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                } else {
+                  Navigator.maybePop(context);
+                }
+              },
               icon: const Icon(Icons.arrow_back, size: 20),
             ),
             title: Text(
@@ -49,6 +60,7 @@ class TourPageShell extends StatelessWidget {
           )
         : null,
     body: SafeArea(
+      maintainBottomViewPadding: maintainBottomViewPadding,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final maxWidth = fullWidth
@@ -60,6 +72,7 @@ class TourPageShell extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: SizedBox(
               width: maxWidth,
+              height: constraints.maxHeight,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
                   fullWidth
@@ -76,6 +89,18 @@ class TourPageShell extends StatelessWidget {
         },
       ),
     ),
+  );
+}
+
+class KeyboardFollower extends StatelessWidget {
+  const KeyboardFollower({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Transform.translate(
+    offset: Offset(0, -MediaQuery.viewInsetsOf(context).bottom),
+    child: child,
   );
 }
 
@@ -101,6 +126,7 @@ class ArtifactTile extends StatelessWidget {
             child: ArtifactPhoto(
               assetPath: artifact.imageAsset,
               color: Color(artifact.color),
+              imageUrl: artifact.imageUrl,
               fit: BoxFit.cover,
             ),
           ),
@@ -143,12 +169,14 @@ class ArtifactPhoto extends StatelessWidget {
     super.key,
     required this.assetPath,
     required this.color,
+    this.imageUrl,
     this.fit = BoxFit.cover,
     this.alignment = Alignment.center,
   });
 
   final String assetPath;
   final Color color;
+  final String? imageUrl;
   final BoxFit fit;
   final Alignment alignment;
 
@@ -160,17 +188,29 @@ class ArtifactPhoto extends StatelessWidget {
       border: Border.all(color: tourGold.withValues(alpha: .3)),
     ),
     clipBehavior: Clip.antiAlias,
-    child: Image.asset(
-      assetPath,
-      fit: fit,
-      alignment: alignment,
-      filterQuality: FilterQuality.high,
-      width: double.infinity,
-      height: double.infinity,
-      errorBuilder: (context, error, stackTrace) => ColoredBox(
-        color: color.withValues(alpha: .22),
-        child: StatueArt(color: color),
-      ),
+    child: imageUrl != null && imageUrl!.isNotEmpty
+        ? Image.network(
+            imageUrl!,
+            fit: fit,
+            alignment: alignment,
+            filterQuality: FilterQuality.high,
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (context, error, stackTrace) => _assetFallback(),
+          )
+        : _assetFallback(),
+  );
+
+  Widget _assetFallback() => Image.asset(
+    assetPath,
+    fit: fit,
+    alignment: alignment,
+    filterQuality: FilterQuality.high,
+    width: double.infinity,
+    height: double.infinity,
+    errorBuilder: (context, error, stackTrace) => ColoredBox(
+      color: color.withValues(alpha: .22),
+      child: StatueArt(color: color),
     ),
   );
 }
@@ -338,47 +378,52 @@ class InfoPair extends StatelessWidget {
 }
 
 class LocationCard extends StatelessWidget {
-  const LocationCard({super.key, required this.museumName, required this.onTap});
+  const LocationCard({
+    super.key,
+    required this.museumName,
+    required this.onTap,
+  });
 
   final String museumName;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) => InkWell(
-
     onTap: onTap,
     borderRadius: BorderRadius.circular(16),
-    child:Container(
-    padding: const EdgeInsets.all(13),
-    decoration: BoxDecoration(
-      color: tourRaised,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: const Color(0xff403c32)),
-    ),
-    child: Row(
-      children: [
-        const Icon(Icons.location_on_outlined, color: tourGold),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                tourText(context, 'Where is it now?', 'مكانها الحالي'),
-                style: TextStyle(color: tourMuted, fontSize: 11),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                isArabic(context) ? _arabicMuseumName(museumName) : museumName,
-                style: const TextStyle(color: tourCream, fontSize: 13),
-              ),
-            ],
+    child: Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: tourRaised,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xff403c32)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.location_on_outlined, color: tourGold),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tourText(context, 'Where is it now?', 'مكانها الحالي'),
+                  style: TextStyle(color: tourMuted, fontSize: 11),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  isArabic(context)
+                      ? _arabicMuseumName(museumName)
+                      : museumName,
+                  style: const TextStyle(color: tourCream, fontSize: 13),
+                ),
+              ],
+            ),
           ),
-        ),
-        const Icon(Icons.chevron_right, color: tourGold),
-      ],
+          const Icon(Icons.chevron_right, color: tourGold),
+        ],
+      ),
     ),
-  )
   );
 }
 
@@ -415,16 +460,20 @@ class OutlineButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
+    this.leading,
   });
   final String label;
   final VoidCallback onPressed;
   final IconData? icon;
+  final Widget? leading;
   @override
   Widget build(BuildContext context) => SizedBox(
     width: double.infinity,
     child: OutlinedButton.icon(
       onPressed: onPressed,
-      icon: icon == null ? const SizedBox.shrink() : Icon(icon, size: 17),
+      icon:
+          leading ??
+          (icon == null ? const SizedBox.shrink() : Icon(icon, size: 17)),
       label: Text(label),
       style: OutlinedButton.styleFrom(
         foregroundColor: tourGold,
@@ -463,6 +512,14 @@ String _localizedPageTitle(BuildContext context, String title) =>
     switch (title) {
       'Scan Artifact' => tourText(context, title, 'مسح قطعة أثرية'),
       'Artifact Details' => tourText(context, title, 'تفاصيل القطعة الأثرية'),
+      'Related Artifacts' => tourText(context, title, 'القطع الأثرية المرتبطة'),
+      'Where is it now?' => tourText(context, title, 'أين توجد الآن؟'),
+      'Ask Bast' => tourText(context, title, 'اسأل باست'),
+      'AI Reconstruction' => tourText(
+        context,
+        title,
+        'إعادة البناء بالذكاء الاصطناعي',
+      ),
       _ => title,
     };
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../utils/app_route.dart';
 import '../utils/app_language.dart';
 import 'artifact_data.dart';
+import 'artifact_image_resolver.dart';
 import 'artifact_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ArtifactDetailsScreen extends StatelessWidget {
   const ArtifactDetailsScreen({super.key, this.artifact});
@@ -33,9 +33,7 @@ class ArtifactDetailsScreen extends StatelessWidget {
         }
         final relatedArtifacts = artifacts
             .where(
-              (item) =>
-                  item.museumId == selectedArtifact.museumId &&
-                  item.id != selectedArtifact.id,
+              (item) => selectedArtifact.relatedArtifactIds.contains(item.id),
             )
             .toList();
         final compactPhone = box.maxWidth < 350;
@@ -51,6 +49,7 @@ class ArtifactDetailsScreen extends StatelessWidget {
           child: ArtifactPhoto(
             assetPath: selectedArtifact.imageAsset,
             color: Color(selectedArtifact.color),
+            imageUrl: selectedArtifact.imageUrl,
             fit: BoxFit.contain,
             alignment: Alignment.center,
           ),
@@ -154,61 +153,53 @@ class ArtifactDetailsScreen extends StatelessWidget {
                   museumName: isArabic(context)
                       ? selectedArtifact.arabicMuseum
                       : selectedArtifact.museum,
-                  onTap: () async {
-                    final museum = Uri.encodeComponent(selectedArtifact.museum);
-
-                    final url = Uri.parse(
-                      'https://www.google.com/maps/search/?api=1&query=$museum',
-                    );
-
-                    final success = await launchUrl(
-                      url,
-                      mode: LaunchMode.externalApplication,
-                    );
-
-                    if (!success && context.mounted) {
-                      showToast(context, 'Could not open Google Maps.');
-                    }
-                  },
+                  onTap: () => pushScreen(
+                    context,
+                    AppRoute.artifactLocationScreen,
+                    selectedArtifact.id,
+                  ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ActionButton(
-                        label: tourText(context, 'Listen', 'استمع'),
-                        icon: Icons.headphones,
-                        onPressed: () => showToast(
-                          context,
-                          tourText(
-                            context,
-                            'Text-to-speech is not connected yet.',
-                            'ميزة الاستماع غير متصلة حاليًا.',
+                FutureBuilder<bool>(
+                  future: hasArtifactReconstructionImages(selectedArtifact),
+                  builder: (context, snapshot) {
+                    final restoreAvailable = snapshot.data == true;
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: ActionButton(
+                            label: tourText(context, 'Listen', 'استمع'),
+                            icon: Icons.headphones,
+                            onPressed: () => showToast(
+                              context,
+                              tourText(
+                                context,
+                                'Text-to-speech is not connected yet.',
+                                'ميزة الاستماع غير متصلة حاليًا.',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: OutlineButton(
-                        label: tourText(context, '✦  Restore', '✦  ترميم'),
-                        onPressed: () => showToast(
-                          context,
-                          selectedArtifact.restoreAvailable
-                              ? tourText(
-                                  context,
-                                  'Restoration is not connected yet.',
-                                  'ميزة الترميم غير متصلة حاليًا.',
-                                )
-                              : tourText(
-                                  context,
-                                  'Restoration is not available for this artifact.',
-                                  'الترميم غير متاح لهذه القطعة.',
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
+                        if (restoreAvailable) ...[
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: OutlineButton(
+                              label: tourText(
+                                context,
+                                '✦  Restore',
+                                '✦  ترميم',
+                              ),
+                              onPressed: () => pushScreen(
+                                context,
+                                AppRoute.aiReconstructionScreen,
+                                selectedArtifact.id,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    );
+                  },
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -229,8 +220,8 @@ class ArtifactDetailsScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () => pushScreen(
                         context,
-                        AppRoute.artifactsScreen,
-                        selectedArtifact.museumId,
+                        AppRoute.relatedArtifactsScreen,
+                        selectedArtifact.id,
                       ),
                       child: Text(
                         tourText(context, 'See all', 'عرض الكل'),
@@ -259,6 +250,7 @@ class ArtifactDetailsScreen extends StatelessWidget {
                               child: ArtifactPhoto(
                                 assetPath: relatedArtifacts[i].imageAsset,
                                 color: Color(relatedArtifacts[i].color),
+                                imageUrl: relatedArtifacts[i].imageUrl,
                               ),
                             ),
                             const SizedBox(height: 5),
@@ -282,14 +274,23 @@ class ArtifactDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 OutlineButton(
                   label: tourText(context, 'Ask Bast', 'اسأل باست'),
-                  icon: Icons.chat_bubble_outline,
-                  onPressed: () => showToast(
-                    context,
-                    tourText(
-                      context,
-                      'Ask Bast is not connected yet.',
-                      'باست غير متصلة حاليًا.',
+                  leading: Container(
+                    width: 24,
+                    height: 24,
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: tourRaised,
+                      shape: BoxShape.circle,
                     ),
+                    child: Image.asset(
+                      'assets/images/ask_bast_logo_cutout.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  onPressed: () => pushScreen(
+                    context,
+                    AppRoute.askBastScreen,
+                    selectedArtifact.id,
                   ),
                 ),
                 const SizedBox(height: 24),

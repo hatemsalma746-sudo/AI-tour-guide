@@ -27,7 +27,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Use the camera to scan museum artifacts.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Audio is not recorded while scanning artifact photos.</string>
+	<string>Use the microphone to turn your spoken Ask Bast questions into text.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Convert spoken Ask Bast questions into text so you can send them.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Choose a photo of a museum artifact to scan.</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -72,5 +74,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

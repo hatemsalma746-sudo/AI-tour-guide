@@ -13,6 +13,7 @@ class ScanErrorScreen extends StatelessWidget {
   Widget build(BuildContext context) => TourPageShell(
     title: 'Scan Artifact',
     centerTitle: true,
+    fullWidth: true,
     trailing: IconButton(
       tooltip: tourText(context, 'Flash', 'الفلاش'),
       onPressed: () {},
